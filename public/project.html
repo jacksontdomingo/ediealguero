@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project — Edith Alguero</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+
+    <!-- Brand = Home -->
+    <a class="brand" href="index.html">Edith Alguero</a>
+
+    <!-- Desktop Nav -->
+    <nav class="nav" id="nav">
+      <a href="portfolio.html"
+         class="nav-link is-active"
+         data-page="portfolio">
+        PORTFOLIO
+      </a>
+
+      <a href="about.html"
+         class="nav-link"
+         data-page="about">
+        ABOUT
+      </a>
+    </nav>
+
+    <!-- Mobile Toggle (hidden on desktop) -->
+    <button class="nav-toggle" id="navToggle"
+            aria-label="Toggle menu"
+            aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+</header>
+
+<div id="top"></div>
+
+<section class="project-hero-section" id="project-section">
+  <!-- Project hero image will be rendered here -->
+</section>
+
+<section class="project-content-section">
+  <div class="container">
+    <div id="project-content">
+      <!-- Project content will be rendered here -->
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>EDITH ALGUERO</p>
+    <a class="backtop" href="#top">↑ BACK TO TOP</a>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" type="module"></script>
+<script type="module">
+  import { getProjectBySlug, getAllProjects, loadData } from './assets/js/data.js';
+  
+  async function renderProjectPage() {
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug') ?? '';
+    
+    const project = await getProjectBySlug(slug);
+    const data = await loadData();
+    const allProjects = await getAllProjects();
+    const heroSection = document.getElementById('project-section');
+    const contentDiv = document.getElementById('project-content');
+    
+    if (!project) {
+      document.title = 'Not Found — Edith Alguero';
+      heroSection.innerHTML = `
+        <div class="container" style="padding-top: 80px; padding-bottom: 80px;">
+          <h1>Project not found.</h1>
+          <p><a class="btn btn-ghost" href="portfolio.html">Back to Portfolio</a></p>
+        </div>
+      `;
+      return;
+    }
+    
+    // Find current project index within the same category (fashion or art)
+    const isFashion = data.fashion.some(p => p.slug === slug);
+    const sameTypeProjects = isFashion ? data.fashion : data.art;
+    const currentIndex = sameTypeProjects.findIndex(p => p.slug === slug);
+    const hasPrevious = currentIndex > 0;
+    const hasNext = currentIndex < sameTypeProjects.length - 1;
+    
+    const previousProject = hasPrevious ? sameTypeProjects[currentIndex - 1] : null;
+    const nextProject = hasNext ? sameTypeProjects[currentIndex + 1] : null;
+    
+    // Update page title
+    document.title = project.title + ' — Edith Alguero';
+    
+    // Render hero image
+    heroSection.innerHTML = `
+      <div class="project-hero-image" style="background-image: url('${escapeHtml(project.cover)}')"></div>
+    `;
+    
+  // Render project information and gallery
+  const galleryHTML = (project.gallery ?? []).map((src, index) => {
+  const isSingleWidth = index % 3 === 0;
+  const widthClass = isSingleWidth ? 'gallery-item-full' : 'gallery-item-half';
+  const ext = src.split('.').pop().toLowerCase();
+
+  if (ext === 'mov' || ext === 'mp4' || ext === 'webm') {
+    return `
+      <video
+        src="${escapeHtml(src)}"
+        class="${widthClass}"
+        controls
+        muted
+        playsinline
+        preload="metadata"
+      ></video>
+    `;
+  }
+
+  return `
+    <img
+      src="${escapeHtml(src)}"
+      alt="${escapeHtml(project.title)}"
+      class="${widthClass}"
+      loading="lazy"
+    >
+  `;
+}).join('');
+
+    
+    // Build navigation HTML
+    const navHTML = `
+      <div class="project-nav">
+        ${hasPrevious ? `<a href="project.html?slug=${encodeURIComponent(previousProject.slug)}" class="nav-link nav-prev">
+          <span class="nav-arrow">←</span>
+          <span class="nav-text">Previous Project</span>
+        </a>` : '<div></div>'}
+        ${hasNext ? `<a href="project.html?slug=${encodeURIComponent(nextProject.slug)}" class="nav-link nav-next">
+          <span class="nav-text">Next Project</span>
+          <span class="nav-arrow">→</span>
+        </a>` : '<div></div>'}
+      </div>
+    `;
+    
+    contentDiv.innerHTML = `
+      <div class="project-info">
+        <h1 class="project-title">${escapeHtml(project.title)}</h1>
+        
+        <div class="project-meta">
+          <div class="meta-box">
+            <div class="meta-label">ROLE</div>
+            <div class="meta-value">${escapeHtml(project.role)}</div>
+          </div>
+          <div class="meta-box">
+            <div class="meta-label">YEAR</div>
+            <div class="meta-value">${escapeHtml(project.year)}</div>
+          </div>
+          <div class="meta-box">
+            <div class="meta-label">PROJECT TYPE</div>
+            <div class="meta-value">${escapeHtml(project.type)}</div>
+          </div>
+        </div>
+
+        <p class="project-description">${escapeHtml(project.description)}</p>
+      </div>
+
+      <div class="project-gallery">
+        ${galleryHTML}
+      </div>
+
+      ${navHTML}
+    `;
+  }
+  
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
+  // Re-render when URL changes (for same-page navigation)
+  async function setupNavigation() {
+    const contentDiv = document.getElementById('project-content');
+    contentDiv.addEventListener('click', async (e) => {
+      const link = e.target.closest('a.nav-link');
+      if (link) {
+        e.preventDefault();
+        const url = new URL(link.href);
+        window.history.pushState({}, '', url);
+        await renderProjectPage();
+        window.scrollTo(0, 0);
+      }
+    });
+  }
+  
+  renderProjectPage();
+  setupNavigation();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fashion Portfolio — Edith Alguero</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+
+    <!-- Brand = Home -->
+    <a class="brand" href="index.html">Edith Alguero</a>
+
+    <!-- Desktop Nav -->
+    <nav class="nav" id="nav">
+      <a href="portfolio.html"
+         class="nav-link is-active"
+         data-page="portfolio">
+        PORTFOLIO
+      </a>
+
+      <a href="about.html"
+         class="nav-link"
+         data-page="about">
+        ABOUT
+      </a>
+    </nav>
+
+    <!-- Mobile Toggle (hidden on desktop) -->
+    <button class="nav-toggle" id="navToggle"
+            aria-label="Toggle menu"
+            aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+</header>
+
+<div id="top"></div>
+
+<section class="portfolio-section">
+  <div class="container">
+    <a href="portfolio.html" class="back-link">← Back to Portfolio Pages</a>
+
+    <div class="portfolio-header">
+      <div class="portfolio-header-left">
+        <h1 class="portfolio-title">FASHION PORTFOLIO</h1>
+      </div>
+      <div class="portfolio-header-right">
+        <p class="portfolio-description">
+          My fashion work explores the intersection of storytelling, material experimentation, and conceptual thinking. From myth and memory to digital worlds, biological innovation, and traditional crafts, each collection investigates transformation, identity, and the tension between beauty and the uncanny. Through silhouette, texture, and detail, I translate narrative and concept into garments that invite viewers to step into immersive, imaginative worlds.
+        </p>
+      </div>
+    </div>
+
+    <div class="portfolio-grid" id="portfolio-grid"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>EDITH ALGUERO</p>
+    <a class="backtop" href="#top">↑ BACK TO TOP</a>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" type="module"></script>
+<script type="module">
+  import { loadData } from './assets/js/data.js';
+  
+  async function renderPortfolioPage() {
+    const data = await loadData();
+    const fashion = data.fashion ?? [];
+    
+    // Render grid
+    const grid = document.getElementById('portfolio-grid');
+    grid.innerHTML = fashion.map(p => `
+      <a class="portfolio-card-item" href="project.html?slug=${encodeURIComponent(p.slug)}">
+        <div class="portfolio-card-image" style="background-image:url('${escapeHtml(p.cover)}')"></div>
+        <h3 class="portfolio-card-title">${escapeHtml(p.title)}</h3>
+      </a>
+    `).join('');
+  }
+  
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+  
+  renderPortfolioPage();
+</script>
+
+</body>
+</html>

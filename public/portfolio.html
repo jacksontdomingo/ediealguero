@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portfolio — Edith Alguero</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+
+    <!-- Brand = Home -->
+    <a class="brand" href="index.html">Edith Alguero</a>
+
+    <!-- Desktop Nav -->
+    <nav class="nav" id="nav">
+      <a href="portfolio.html"
+         class="nav-link is-active"
+         data-page="portfolio">
+        PORTFOLIO
+      </a>
+
+      <a href="about.html"
+         class="nav-link"
+         data-page="about">
+        ABOUT
+      </a>
+    </nav>
+
+    <!-- Mobile Toggle (hidden on desktop) -->
+    <button class="nav-toggle" id="navToggle"
+            aria-label="Toggle menu"
+            aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+</header>
+
+<div id="top"></div>
+
+<section class="portfolio-hero">
+  <div class="portfolio-grid">
+    <a href="fashion-portfolio.html" class="portfolio-card">
+      <div class="portfolio-image" style="background-image: url('assets/img/fashion-cover.webp')"></div>
+      <div class="portfolio-overlay">
+        <h2 class="portfolio-label">FASHION PORTFOLIO</h2>
+      </div>
+    </a>
+    <a href="art-portfolio.html" class="portfolio-card">
+      <div class="portfolio-image" style="background-image: url('assets/img/art-cover.webp')"></div>
+      <div class="portfolio-overlay">
+        <h2 class="portfolio-label">ART PORTFOLIO</h2>
+      </div>
+    </a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>EDITH ALGUERO</p>
+    <a class="backtop" href="#top">↑ BACK TO TOP</a>
+  </div>
+</footer>
+
+<script src="assets/js/main.js" type="module"></script>
+
+</body>
+</html>
